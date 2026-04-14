@@ -29,7 +29,7 @@ There are a few features that I feel could be seen as bugs.
 
 This project only includes the scripts themselves, not the full workplace. In order to set the movement system up correctly, follow these steps:
 
-- Create a new folder in ReplicatedStorage named "Movement"
-- Import all the scripts except for the MovementController into the new folder.
-- Import the MovementController into StarterPlayer -> StarterPlayerScripts
-- Force R6 Characters by heading to Avarar -> Avatar Settings -> 3 Dots in the top right -> R6 Only
+- Create a new folder in ReplicatedStorage named "Movement".
+- Import all the scripts except for the MovementController into the new folder by creating ModuleScripts and copy-pasting the code over.
+- Import the MovementController into StarterPlayer -> StarterPlayerScripts using the same method.
+- Force R6 Characters by heading to Avarar -> Avatar Settings -> 3 Dots in the top right -> R6 Only.

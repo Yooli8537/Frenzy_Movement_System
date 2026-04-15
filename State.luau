@@ -25,7 +25,7 @@ function movementState:Init(Humanoid, rootPart)
 	self.Humanoid = Humanoid
 	self.rootPart = rootPart
 
-	-- Applying Config settings
+	-- Applying Config settings for Initialization
 	movementState.maxSpeed = Config.maxSpeed
 	movementState.acceleration = Config.acceleration
 	movementState.friction = Config.friction
@@ -37,7 +37,6 @@ function movementState:Init(Humanoid, rootPart)
 	movementState.slideAnimPhase = nil
 	movementState.slideVelocity = nil
 	movementState.currentSlideDirection = nil
-	movementState.scheduleCancel = false
 
 	-- Character Joint Parents
 	local character = movementState.Humanoid.Parent
@@ -52,7 +51,7 @@ function movementState:Init(Humanoid, rootPart)
 	self.rightLeg = torso:WaitForChild("Right Hip")
 	self.leftLeg = torso:WaitForChild("Left Hip")
 
-	-- Applying original Character Joint positions
+	-- Saving original Character Joint positions
 	self.originalHipHeight = Humanoid.HipHeight
 	self.originalNeckC0 = self.neck.C0
 	self.originalRootJointC0 = self.rootJoint.C0
@@ -78,6 +77,8 @@ function movementState:setMovementState(isSliding, isCrouching, isSprinting)
 		self.neck.C0 = self.originalNeckC0 * CFrame.new(0, 0, 0)
 		self.rightLeg.C0 = self.originalRightLegC0 * CFrame.new(0, 0, 0)
 		self.leftLeg.C0 = self.originalLeftLegC0 * CFrame.new(0, 0, 0)
+		
+		-- Optional Helicopter Mode
 		--self.rightShoulder.C0 = self.rightShoulder.C0 * CFrame.Angles(0, 0, math.rad(25))
 		--self.leftShoulder.C0 = self.leftShoulder.C0 * CFrame.Angles(0, 0, math.rad(25))
 	else
@@ -88,28 +89,6 @@ function movementState:setMovementState(isSliding, isCrouching, isSprinting)
 
 	end
 end
-
---function movementState:setCrouch(isCrouching, isSprinting)
---	if (isCrouching == true) then
---		self.rightShoulder.C0 = self.rightShoulder.C0 * CFrame.Angles(math.rad(-1), 0, 0)
---		self.leftShoulder.C0 = self.leftShoulder.C0 * CFrame.Angles(math.rad(-1), 0, 0)
---	elseif (isSprinting == true) then
---		self.neck.C0 = self.neck.C0 * CFrame.Angles(0, 0, math.rad(100))
---		self.rightShoulder.C0 = self.rightShoulder.C0 * CFrame.Angles(0, 0, math.rad(-100))
---		self.leftShoulder.C0 = self.leftShoulder.C0 * CFrame.Angles(0, 0, math.rad(100))
---		
---		local character = movementState.Humanoid.Parent
---		local Humanoid = character:WaitForChild("Humanoid")
---		Humanoid.JumpHeight = 10000
---	else
---		self.neck.C0 = self.originalNeckC0
---self.originalHipHeight /= 0.5
---self.originalNeckC0 += 0
---self.originalRootJointC0 += 0
---self.originalRightShoulderC0 += 0
---self.originalLeftShoulderC0 += 0
---	end
---end
 
 function movementState:UpdateGrounded()
 	self.grounded = self.Humanoid.FloorMaterial ~= Enum.Material.Air

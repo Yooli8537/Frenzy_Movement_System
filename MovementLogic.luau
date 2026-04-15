@@ -46,21 +46,29 @@ function MovementMovementLogic:Update(dt, state)
 	end
 
 	-- Changes Speed depending on movement state, Jumping gets rid of slides
-	if Input.isJumping == true then
-		if Input.isSliding == true then
+	if Input.isJumping  then
+		if Input.isSliding  then
 			Input.isSliding = false
-			AnimationController:StopAll()
+			if State.currentSlideDirection == "fwd" then
+				AnimationController:SlideEnd()
+			elseif State.currentSlideDirection == "bwd" then
+				AnimationController:BackwardSlideEnd()
+			elseif State.currentSlideDirection == "left" then
+				AnimationController:LeftSlideEnd()
+			elseif State.currentSlideDirection == "right" then
+				AnimationController:RightSlideEnd()
+			end
 		end
-	elseif Input.isSliding == true and State.grounded == true and State.slidingIndex == 0 then
+	elseif Input.isSliding and State.grounded then
 		State.maxSpeed = Config.slideMaxSpeed
 		State.acceleration = Config.slideAcceleration
 		State.friction = Config.slideFriction
-	elseif Input.isCrouching == true then
+	elseif Input.isCrouching then
 		State.maxSpeed = Config.crouchMaxSpeed
 		State.acceleration = Config.acceleration
 		State.friction = Config.crouchFriction
 		State:setMovementState(Input.isSliding, Input.isCrouching, Input.isSprinting)
-	elseif Input.isSprinting == true then
+	elseif Input.isSprinting then
 		State.maxSpeed = Config.maxSpeed * Config.sprintSpeedMultiplier
 		State.acceleration = Config.acceleration
 		State.friction = Config.friction
@@ -78,11 +86,8 @@ function MovementMovementLogic:Update(dt, state)
 	local targetVelocity
 
 	-- Calculating target velocity
-	if Input.isSliding == true and State.grounded == true and State.slideDirection then -- SlideDirection must exist to avoid calculations with nil
-		-- Sliding on ground
-		targetVelocity = State.slideDirection * State.maxSpeed
-	elseif Input.isSliding == true and State.grounded == false and State.slideDirection then
-		-- Sliding in the air
+	if Input.isSliding and State.slideDirection then -- SlideDirection must exist to avoid calculations with nil
+		-- Sliding Velocity
 		targetVelocity = State.slideDirection * State.maxSpeed
 	else
 		-- For non-sliding states
@@ -98,13 +103,26 @@ function MovementMovementLogic:Update(dt, state)
 
 	-- Proper slide physics
 	-- Locking slide direction
-	if Input.isSliding == true and State.grounded and not State.slideDirection then
+	if Input.isSliding and State.grounded and not State.slideDirection then
 		if MoveDirection.Magnitude > 0 then
 			State.slideDirection = MoveDirection.Unit
 		else
 			State.slideDirection = State.rootPart.CFrame.LookVector
 		end
 		State.slideTime = 0
+	end
+	
+	-- Increased Floatiness when airborne for more than 0.5s
+	if not State.grounded then
+		State.airTime += dt
+
+		if State.airTime > 0.5 and not Input.isSliding then
+			State.maxSpeed *= 5
+			State.friction /= State.airMultiplier
+			verticalVelocity += Config.airMultiplier * dt
+		end
+	elseif State.grounded then
+		State.airTime = 0
 	end
 
 	-- Slide friction variables
@@ -113,19 +131,18 @@ function MovementMovementLogic:Update(dt, state)
 	local slideResistance = Config.slideResistance
 
 	-- Calculating friction & breaking point
-	if Input.isSliding == true and State.grounded == true then
+	if Input.isSliding and State.grounded then
 		State.slideTime += dt
 		State.friction = baseFriction + (maxFriction - baseFriction) * (1 - math.exp(-slideResistance * State.slideTime))
 		-- Breaking slide once a certain friction (speed) is met
 		if State.friction > Config.slideBreakFriction then
 			Input.isSliding = false
 		end
-	elseif  State.airTime > 1.5 then
+	elseif State.airTime > 1.5 then
 		Input.isSliding = false
-		print("Airtime slide cancel")
-	elseif Input.isSliding == true and State.grounded == false then
+	elseif Input.isSliding and not State.grounded then
 		State.slideTime = 0
-	elseif Input.isSliding == false then
+	elseif not Input.isSliding then
 		State.slideDirection = nil
 		State.slidingIndex = 0
 	end
@@ -142,19 +159,6 @@ function MovementMovementLogic:Update(dt, state)
 		end
 	end
 
-	-- Increased Floatiness when airborne for more than 0.5s
-	if not State.grounded then
-		State.airTime += dt
-
-		if State.airTime > 0.5 and Input.isSliding == false then
-			State.maxSpeed *= 5
-			State.friction /= State.airMultiplier
-			verticalVelocity += Config.airMultiplier * dt
-		end
-	else
-		State.airTime = 0
-	end
-
 	-- Preventing velocity from being higher than maximum speed
 	if horizontalVelocity.Magnitude > State.maxSpeed then
 		horizontalVelocity = horizontalVelocity.Unit * State.maxSpeed
@@ -165,12 +169,9 @@ function MovementMovementLogic:Update(dt, state)
 	State.rootPart.Velocity = State.velocity
 
 	-- Animations	
-	if Input.isSliding == true then
-		State:setMovementState(Input.isSliding, Input.isCrouching, Input.isSprinting)
-
+	if Input.isSliding then
 		-- Checks for Input- & Slidedirection in order to prevent animation switches during slide.
-		if (Input.fwd == true and State.currentSlideDirection == nil) or State.currentSlideDirection == "fwd" then
-
+		if (Input.fwd and State.currentSlideDirection == nil) or State.currentSlideDirection == "fwd" then
 			-- Starting the slide only executes once.
 			if State.slidingIndex == 0 then
 				State.slidingIndex = 1
@@ -181,8 +182,7 @@ function MovementMovementLogic:Update(dt, state)
 			else
 				AnimationController:SlideLoop()
 			end
-		elseif (Input.bwd == true and State.currentSlideDirection == nil) or State.currentSlideDirection == "bwd" then
-
+		elseif (Input.bwd  and State.currentSlideDirection == nil) or State.currentSlideDirection == "bwd" then
 			if State.slidingIndex == 0 then
 				State.slidingIndex = 1
 				State.currentSlideDirection = "bwd"
@@ -192,8 +192,7 @@ function MovementMovementLogic:Update(dt, state)
 			else
 				AnimationController:BackwardSlideLoop()
 			end
-		elseif (Input.left == true and State.currentSlideDirection == nil) or State.currentSlideDirection == "left" then
-
+		elseif (Input.left  and State.currentSlideDirection == nil) or State.currentSlideDirection == "left" then
 			if State.slidingIndex == 0 then
 				State.slidingIndex = 1
 				State.currentSlideDirection = "left"
@@ -203,8 +202,7 @@ function MovementMovementLogic:Update(dt, state)
 			else
 				AnimationController:LeftSlideLoop()
 			end
-		elseif (Input.right == true and State.currentSlideDirection == nil) or State.currentSlideDirection == "right" then
-
+		elseif (Input.right  and State.currentSlideDirection == nil) or State.currentSlideDirection == "right" then
 			if State.slidingIndex == 0 then
 				State.slidingIndex = 1
 				State.currentSlideDirection = "right"
@@ -226,8 +224,7 @@ function MovementMovementLogic:Update(dt, state)
 		end
 
 		-- Once slide has ended, the correct ending plays. Inputs are unreliable since the player could've stopped pressing them
-	elseif Input.isSliding == false then
-
+	elseif not Input.isSliding then
 		if State.currentSlideDirection == "fwd" then
 			AnimationController:SlideEnd()
 		elseif State.currentSlideDirection == "bwd" then
@@ -241,7 +238,6 @@ function MovementMovementLogic:Update(dt, state)
 		end
 		State.currentSlideDirection = nil
 	end
-	print(State.airTime)
 end
 
 return MovementMovementLogic

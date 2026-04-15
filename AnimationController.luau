@@ -6,7 +6,7 @@ local State = require(game.ReplicatedStorage.Movement.State)
 local MovementAnimationController = {}
 
 MovementAnimationController.Animations = {
-	-- Crouch (Not made yet, idk how to make one for R6)
+	-- Crouch (Not made yet, idk how to make one for R6 they all look ugly)
 	--CrouchStart = ,
 	--CrouchLoop  = ,
 	--CrouchEnd = ,

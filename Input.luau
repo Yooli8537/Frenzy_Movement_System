@@ -45,7 +45,7 @@ end
 function MovementInput.Crouch(inputObject, processedEvent)
 	if processedEvent then return end
 
-	if inputObject.KeyCode.Name == "C" and MovementInput.isSprinting == false and MovementInput.isSliding == false then
+	if inputObject.KeyCode.Name == "C" and not MovementInput.isSprinting and not MovementInput.isSliding then
 		MovementInput.isCrouching = true
 		MovementInput.isSprinting = false
 		return MovementInput.isSprinting, MovementInput.isCrouching
@@ -55,7 +55,7 @@ end
 function MovementInput.CrouchEnd(inputObject, processedEvent)
 	if processedEvent then return end
 
-	if inputObject.KeyCode.Name == "C" and MovementInput.isSprinting == false and MovementInput.isCrouching == true then
+	if inputObject.KeyCode.Name == "C" and not MovementInput.isSprinting and MovementInput.isCrouching then
 		MovementInput.isCrouching = false
 		return MovementInput.isCrouching
 	end
@@ -65,23 +65,23 @@ function MovementInput.Slide(inputObject, processedEvent)
 	if processedEvent then return end
 
 	-- In order to slide, the game checks that you are sprinting.
-	if inputObject.KeyCode.Name == "C" and MovementInput.isSprinting == true then
+	if inputObject.KeyCode.Name == "C" and MovementInput.isSprinting then
 		MovementInput.isSliding = true
 		return MovementInput.isSliding
 	end
 end
 
+-- To encourage more skilled sliding, I recommend keeping the SlideEnd function call commented out.
+-- If you decide to use it, a player can just spam C to stay at the max speed (72) constantly.
+
 function MovementInput.SlideEnd(inputObject, processedEvent)
 	if processedEvent then return end
 
-	if inputObject.KeyCode.Name == "C" and MovementInput.isSliding == true then
+	if inputObject.KeyCode.Name == "C" and MovementInput.isSliding then
 		MovementInput.isSliding = false
-		print("Forced Slide Cancellation")
 		return MovementInput.isSliding
 	end
 end
-
--- No SlideEnd since slide is ended by the physics
 
 function MovementInput.Fwd(inputObject, processedEvent)
 	if processedEvent then return end
@@ -161,7 +161,7 @@ UserInputService.InputEnded:Connect(MovementInput.SprintEnd)
 UserInputService.InputBegan:Connect(MovementInput.Crouch)
 UserInputService.InputEnded:Connect(MovementInput.CrouchEnd)
 UserInputService.InputBegan:Connect(MovementInput.Slide)
-UserInputService.InputEnded:Connect(MovementInput.SlideEnd)
+--UserInputService.InputEnded:Connect(MovementInput.SlideEnd)
 UserInputService.InputBegan:Connect(MovementInput.Fwd)
 UserInputService.InputEnded:Connect(MovementInput.FwdEnd)
 UserInputService.InputBegan:Connect(MovementInput.Bwd)

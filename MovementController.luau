@@ -14,13 +14,12 @@ local State = require(MovementFolder.State)
 local Input = require(MovementFolder.Input)
 local MovementLogic = require(MovementFolder.MovementLogic)
 local AnimationController = require(game.ReplicatedStorage.Movement.AnimationController)
-local Debug = require(MovementFolder.Debug)
 
 local player = Players.LocalPlayer
 
 -- Movement initializes once a player is added
 local function onCharacterAdded(character)
-	if State.enabled == false then return end
+	if not State.enabled then return end
 	local Humanoid = character:WaitForChild("Humanoid")
 	local rootPart = character:WaitForChild("HumanoidRootPart")
 	-- Initializing ModuleScripts
@@ -29,18 +28,16 @@ local function onCharacterAdded(character)
 	MovementLogic:Init(character.Humanoid, character.HumanoidRootPart)
 	AnimationController:Init(State.Humanoid)
 
-	-- Desired Roblox-side physics
-	Humanoid.WalkSpeed = 0
+	-- Desired Roblox-side physics (Universal Changes).
+	Humanoid.WalkSpeed = 0 -- Setting this to another value will likely break stuns depending on how they are implemented.
 	workspace.Gravity = Config.defaultGravity
-	State.Humanoid.BreakJointsOnDeath = false
+	State.Humanoid.BreakJointsOnDeath = false -- Looks nicer to me, optional change.
 	print("Character Movement Initialization complete")
-	print("RigType:", Humanoid.RigType)
+	print("RigType:", Humanoid.RigType) -- If there are Errors thrown to do with the Neck, check if this outputs R6 or R15. Should be R6.
 end
 
 -- Initializes MovementController if player already exists
-if player.Character then
-	onCharacterAdded(player.Character)
-end
+player.CharacterAppearanceLoaded:Connect(onCharacterAdded)
 
 -- Initializes MovementController once a player is added
 player.CharacterAdded:Connect(onCharacterAdded)

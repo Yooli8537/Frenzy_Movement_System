@@ -5,6 +5,7 @@ This is the Movement System used for my Roblox game Frenzy. Some of the Assets a
 ## Features
 
 Custom movement options:
+
 - Sprinting
 - Crouching
 - Sliding
@@ -18,6 +19,7 @@ This custom Movement Engine primarily works by overriding Roblox' usual horizont
 ## Potentially confusing functions
 
 There are a few features that I feel could be seen as bugs.
+
 - Jumping cancels sliding
 - During a slide, you can't change direction
 - Default Movement Speed is set to 0

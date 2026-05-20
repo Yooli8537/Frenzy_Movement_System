@@ -1,8 +1,5 @@
 -- Made by Yooli8537
 
--- Gathering required ModuleScript
-local State = require(game.ReplicatedStorage.Movement.State)
-
 local MovementAnimationController = {}
 
 MovementAnimationController.Animations = {
@@ -78,8 +75,6 @@ function MovementAnimationController:SlideLoop()
 	local loopTrack = self.Tracks.SlideLoop
 	loopTrack.Looped = true
 
-	State.slideAnimPhase = "loop"
-
 	--print("Playing SlideLoop")
 	if not loopTrack.IsPlaying then
 		loopTrack:Play()
@@ -121,8 +116,6 @@ function MovementAnimationController:BackwardSlideLoop()
 
 	local loopTrack = self.Tracks.BackwardSlideLoop
 	loopTrack.Looped = true
-
-	State.slideAnimPhase = "loop"
 
 	--print("Playing BackwardSlideLoop")
 	if not loopTrack.IsPlaying then
@@ -166,8 +159,6 @@ function MovementAnimationController:LeftSlideLoop()
 	local loopTrack = self.Tracks.LeftSlideLoop
 	loopTrack.Looped = true
 
-	State.slideAnimPhase = "loop"
-
 	--print("Playing LeftSlideLoop")
 	if not loopTrack.IsPlaying then
 		loopTrack:Play()
@@ -209,8 +200,6 @@ function MovementAnimationController:RightSlideLoop()
 
 	local loopTrack = self.Tracks.RightSlideLoop
 	loopTrack.Looped = true
-
-	State.slideAnimPhase = "loop"
 
 	--print("Playing RightSlideLoop")
 	if not loopTrack.IsPlaying then

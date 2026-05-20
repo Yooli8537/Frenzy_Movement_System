@@ -39,9 +39,6 @@ end
 -- Initializes MovementController if player already exists
 player.CharacterAppearanceLoaded:Connect(onCharacterAdded)
 
--- Initializes MovementController once a player is added
-player.CharacterAdded:Connect(onCharacterAdded)
-
 -- Updating logic every frame
 RunService.RenderStepped:Connect(function(dt)
 	if State.Humanoid then

@@ -95,8 +95,8 @@ function MovementMovementLogic:Update(dt, state)
 	end
 
 	-- Calculating player velocity
-	local accelFactor = math.clamp(State.acceleration * dt, 0, 0.9) -- Prevents exponential speed overload
-	playerVelocity += (targetVelocity - playerVelocity) * accelFactor
+	local lerpFactor = math.clamp(State.acceleration * dt, 0, 0.9) -- Prevents exponential speed overload
+	playerVelocity += (targetVelocity - playerVelocity) * lerpFactor -- Moves player towards target velocity
 	local horizontalVelocity = Vector3.new(playerVelocity.X, 0, playerVelocity.Z)
 	local verticalVelocity = State.rootPart.Velocity.Y
 	local speed = horizontalVelocity.Magnitude
@@ -112,12 +112,16 @@ function MovementMovementLogic:Update(dt, state)
 		State.slideTime = 0
 	end
 	
+	if not Input.isSliding then
+		State.slideTime = 0
+	end
+	
 	-- Increased Floatiness when airborne for more than 0.5s
 	if not State.grounded then
 		State.airTime += dt
 
 		if State.airTime > 0.5 and not Input.isSliding then
-			State.maxSpeed *= 5
+			State.maxSpeed = Config.maxSpeed * Config.sprintSpeedMultiplier * Config.airMultiplier
 			State.friction /= State.airMultiplier
 			verticalVelocity += Config.airMultiplier * dt
 		end
@@ -238,6 +242,7 @@ function MovementMovementLogic:Update(dt, state)
 		end
 		State.currentSlideDirection = nil
 	end
+	print(State.friction)
 end
 
 return MovementMovementLogic

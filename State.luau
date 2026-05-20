@@ -34,13 +34,10 @@ function movementState:Init(Humanoid, rootPart)
 	movementState.slideDirection = nil
 	movementState.slideTime = 0
 	movementState.slidingIndex = 0
-	movementState.slideAnimPhase = nil
-	movementState.slideVelocity = nil
 	movementState.currentSlideDirection = nil
 
 	-- Character Joint Parents
 	local character = movementState.Humanoid.Parent
-	print("RigType:", Humanoid.RigType)
 	local torso = character:WaitForChild("Torso")
 
 	-- Character Joints
@@ -77,7 +74,7 @@ function movementState:setMovementState(isSliding, isCrouching, isSprinting)
 		self.neck.C0 = self.originalNeckC0 * CFrame.new(0, 0, 0)
 		self.rightLeg.C0 = self.originalRightLegC0 * CFrame.new(0, 0, 0)
 		self.leftLeg.C0 = self.originalLeftLegC0 * CFrame.new(0, 0, 0)
-		
+
 		-- Optional Helicopter Mode
 		--self.rightShoulder.C0 = self.rightShoulder.C0 * CFrame.Angles(0, 0, math.rad(25))
 		--self.leftShoulder.C0 = self.leftShoulder.C0 * CFrame.Angles(0, 0, math.rad(25))

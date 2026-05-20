@@ -18,10 +18,10 @@ MovementConfig.crouchFriction = MovementConfig.friction * 1.5
 -- Sliding
 MovementConfig.slideMaxSpeed = MovementConfig.maxSpeed * 4
 MovementConfig.slideAcceleration = MovementConfig.acceleration * 2
-MovementConfig.slideFriction = MovementConfig.friction * 2
-MovementConfig.slideMaxFriction = MovementConfig.slideFriction * 40
-MovementConfig.slideBreakFriction = MovementConfig.slideMaxFriction * 0.95 -- Friction required to cancel your slide automatically
-MovementConfig.slideResistance = 2.8 -- Speed at which your slide slows
+MovementConfig.slideFriction = MovementConfig.friction * 3
+MovementConfig.slideMaxFriction = MovementConfig.slideFriction * 30
+MovementConfig.slideBreakFriction = MovementConfig.slideMaxFriction * 0.9 -- Friction required to cancel your slide automatically
+MovementConfig.slideResistance = 2.3 -- Speed at which your slide slows
 
 -- Environment Modifiers
 MovementConfig.defaultGravity = 120

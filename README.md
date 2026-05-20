@@ -33,5 +33,5 @@ This project only includes the scripts themselves, not the full workplace. In or
 
 - Create a new folder in ReplicatedStorage named "Movement".
 - Import all the scripts except for the MovementController into the new folder by creating ModuleScripts and copy-pasting the code over.
-- Import the MovementController into StarterPlayer -> StarterPlayerScripts using the same method.
+- Import the MovementController into StarterPlayer -> StarterPlayerScripts, create a LocalScript and copy-paste the code over.
 - Force R6 Characters by heading to Avarar -> Avatar Settings -> 3 Dots in the top right -> R6 Only.
